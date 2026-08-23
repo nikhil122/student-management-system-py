@@ -3519,6 +3519,10 @@ def student_attendance(id):
 # FEE PAYMENTS LIST
 # =========================
 
+# =========================
+# FEES
+# =========================
+
 @app.route("/fees")
 def fees():
 
@@ -3540,7 +3544,7 @@ def fees():
 
 
         # =========================
-        # BASE QUERY
+        # PAYMENT RECORDS
         # =========================
 
         query = """
@@ -3558,7 +3562,9 @@ def fees():
                 s.student_name,
                 s.admission_no,
 
-                c.course_name
+                c.course_name,
+                c.course_code,
+                c.total_fees
 
             FROM fee_payments fp
 
@@ -3598,7 +3604,7 @@ def fees():
 
 
         # =========================
-        # PAYMENT MODE FILTER
+        # PAYMENT MODE
         # =========================
 
         if payment_mode:
@@ -3631,15 +3637,143 @@ def fees():
         payments = cursor.fetchall()
 
 
+        # =========================
+        # CALCULATE PAID / REMAINING
+        # COURSE-WISE
+        # =========================
+
+        for payment in payments:
+
+            if payment["course_id"]:
+
+                cursor.execute("""
+                    SELECT
+                        COALESCE(
+                            SUM(amount),
+                            0
+                        ) AS paid_amount
+
+                    FROM fee_payments
+
+                    WHERE student_id = %s
+                    AND course_id = %s
+                """, (
+                    payment["student_id"],
+                    payment["course_id"]
+                ))
+
+                paid_data = cursor.fetchone()
+
+                paid_amount = (
+                    paid_data["paid_amount"]
+                    or 0
+                )
+
+                total_fees = (
+                    payment["total_fees"]
+                    or 0
+                )
+
+                remaining_fees = (
+                    total_fees
+                    - paid_amount
+                )
+
+                if remaining_fees < 0:
+                    remaining_fees = 0
+
+                payment["paid_fees"] = paid_amount
+
+                payment["remaining_fees"] = remaining_fees
+
+            else:
+
+                payment["paid_fees"] = None
+
+                payment["remaining_fees"] = None
+
+
+        # =========================
+        # TOTAL SUMMARY
+        # =========================
+
+        cursor.execute("""
+            SELECT
+                COALESCE(
+                    SUM(amount),
+                    0
+                ) AS total_collected
+
+            FROM fee_payments
+        """)
+
+        summary_data = cursor.fetchone()
+
+        total_collected = (
+            summary_data["total_collected"]
+            or 0
+        )
+
+
+        # =========================
+        # TOTAL FEES FROM
+        # ASSIGNED COURSES
+        # =========================
+
+        cursor.execute("""
+            SELECT
+                COALESCE(
+                    SUM(c.total_fees),
+                    0
+                ) AS total_fees
+
+            FROM student_courses sc
+
+            INNER JOIN courses c
+                ON c.id = sc.course_id
+
+            WHERE sc.status != 'Dropped'
+        """)
+
+        total_fee_data = cursor.fetchone()
+
+        total_fees = (
+            total_fee_data["total_fees"]
+            or 0
+        )
+
+
+        # =========================
+        # TOTAL REMAINING
+        # =========================
+
+        total_remaining = (
+            total_fees
+            - total_collected
+        )
+
+        if total_remaining < 0:
+            total_remaining = 0
+
+
         cursor.close()
         conn.close()
 
 
         return render_template(
             "fees.html",
+
             payments=payments,
+
             search=search,
-            payment_mode=payment_mode
+
+            payment_mode=payment_mode,
+
+            total_fees=total_fees,
+
+            total_collected=total_collected,
+
+            total_remaining=total_remaining
         )
 
 
@@ -6169,6 +6303,375 @@ def profile():
             500
         )
 
+    # =========================
+# ASSIGN COURSE TO STUDENT
+# =========================
+
+@app.route("/students/<int:id>/assign-course", methods=["GET", "POST"])
+def assign_course(id):
+
+    try:
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # =========================
+        # GET STUDENT
+        # =========================
+
+        cursor.execute("""
+            SELECT
+                id,
+                admission_no,
+                student_name
+            FROM students
+            WHERE id = %s
+        """, (id,))
+
+        student = cursor.fetchone()
+
+        if not student:
+
+            cursor.close()
+            conn.close()
+
+            flash(
+                "Student not found.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("students")
+            )
+
+
+        # =========================
+        # GET COURSES
+        # =========================
+
+        cursor.execute("""
+            SELECT
+                id,
+                course_name,
+                course_code
+            FROM courses
+            WHERE status = 'Active'
+            ORDER BY course_name ASC
+        """)
+
+        courses = cursor.fetchall()
+
+
+        # =========================
+        # POST
+        # =========================
+
+        if request.method == "POST":
+
+            course_id = request.form.get(
+                "course_id",
+                ""
+            ).strip()
+
+            enrollment_date = request.form.get(
+                "enrollment_date",
+                ""
+            ).strip()
+
+            status = request.form.get(
+                "status",
+                "Active"
+            ).strip()
+
+
+            if not course_id:
+
+                flash(
+                    "Please select a course.",
+                    "danger"
+                )
+
+                return render_template(
+                    "assign_course.html",
+                    student=student,
+                    courses=courses
+                )
+
+
+            if status not in [
+                "Active",
+                "Completed",
+                "Dropped"
+            ]:
+
+                status = "Active"
+
+
+            # =========================
+            # CHECK DUPLICATE
+            # =========================
+
+            cursor.execute("""
+                SELECT id
+                FROM student_courses
+                WHERE student_id = %s
+                  AND course_id = %s
+            """, (
+                id,
+                course_id
+            ))
+
+            existing = cursor.fetchone()
+
+
+            if existing:
+
+                flash(
+                    "This course is already assigned to this student.",
+                    "danger"
+                )
+
+                return render_template(
+                    "assign_course.html",
+                    student=student,
+                    courses=courses
+                )
+
+
+            # =========================
+            # INSERT
+            # =========================
+
+            cursor.execute("""
+                INSERT INTO student_courses (
+                    student_id,
+                    course_id,
+                    enrollment_date,
+                    status
+                )
+                VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
+            """, (
+                id,
+                course_id,
+                enrollment_date or None,
+                status
+            ))
+
+
+            conn.commit()
+
+            cursor.close()
+            conn.close()
+
+
+            flash(
+                "Course assigned successfully.",
+                "success"
+            )
+
+            return redirect(
+                url_for(
+                    "student_details",
+                    id=id
+                )
+            )
+
+
+        cursor.close()
+        conn.close()
+
+
+        return render_template(
+            "assign_course.html",
+            student=student,
+            courses=courses
+        )
+
+
+    except mysql.connector.Error as error:
+
+        return (
+            f"Database Error: {error}",
+            500
+        )
+# =========================
+# UPDATE STUDENT COURSE STATUS
+# =========================
+
+@app.route(
+    "/students/<int:student_id>/course/<int:course_id>/status",
+    methods=["POST"]
+)
+def update_student_course_status(student_id, course_id):
+
+    try:
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        status = request.form.get(
+            "status",
+            "Active"
+        ).strip()
+
+        if status not in [
+            "Active",
+            "Completed",
+            "Dropped"
+        ]:
+
+            flash(
+                "Invalid course status.",
+                "danger"
+            )
+
+            cursor.close()
+            conn.close()
+
+            return redirect(
+                url_for(
+                    "student_details",
+                    id=student_id
+                )
+            )
+
+
+        cursor.execute("""
+            SELECT id
+            FROM student_courses
+            WHERE id = %s
+              AND student_id = %s
+        """, (
+            course_id,
+            student_id
+        ))
+
+        enrollment = cursor.fetchone()
+
+
+        if not enrollment:
+
+            flash(
+                "Course assignment not found.",
+                "danger"
+            )
+
+        else:
+
+            cursor.execute("""
+                UPDATE student_courses
+                SET status = %s
+                WHERE id = %s
+                  AND student_id = %s
+            """, (
+                status,
+                course_id,
+                student_id
+            ))
+
+            conn.commit()
+
+            flash(
+                "Course status updated successfully.",
+                "success"
+            )
+
+
+        cursor.close()
+        conn.close()
+
+        return redirect(
+            url_for(
+                "student_details",
+                id=student_id
+            )
+        )
+
+
+    except mysql.connector.Error as error:
+
+        return (
+            f"Database Error: {error}",
+            500
+        )
+
+    # =========================
+# REMOVE STUDENT COURSE
+# =========================
+
+@app.route(
+    "/students/<int:student_id>/course/<int:course_id>/remove",
+    methods=["POST"]
+)
+def remove_student_course(student_id, course_id):
+
+    try:
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+
+        cursor.execute("""
+            SELECT id
+            FROM student_courses
+            WHERE id = %s
+              AND student_id = %s
+        """, (
+            course_id,
+            student_id
+        ))
+
+        enrollment = cursor.fetchone()
+
+
+        if not enrollment:
+
+            flash(
+                "Course assignment not found.",
+                "danger"
+            )
+
+        else:
+
+            cursor.execute("""
+                DELETE FROM student_courses
+                WHERE id = %s
+                  AND student_id = %s
+            """, (
+                course_id,
+                student_id
+            ))
+
+            conn.commit()
+
+            flash(
+                "Course removed successfully.",
+                "success"
+            )
+
+
+        cursor.close()
+        conn.close()
+
+        return redirect(
+            url_for(
+                "student_details",
+                id=student_id
+            )
+        )
+
+
+    except mysql.connector.Error as error:
+
+        return (
+            f"Database Error: {error}",
+            500
+        )
 # =========================
 # APPLICATION START
 # =========================

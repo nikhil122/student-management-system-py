@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}
+Assign Course - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Assign Course
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>
+            Assign Course
+        </h2>
+
+        <p>
+            Assign a course to {{ student.student_name }}.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('student_details', id=student.id) }}"
+        class="btn"
+        style="
+            background:#f3f4f6;
+            color:#374151;
+        "
+    >
+        ← Back
+    </a>
+
+</div>
+
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Student Information
+            </h3>
+
+            <p>
+                Select a course for this student.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'assign_course',
+            id=student.id
+        ) }}"
+    >
+
+        <div style="padding:22px;">
+
+            <div class="assign-course-grid">
+
+
+                <!-- STUDENT -->
+
+                <div class="form-group">
+
+                    <label>
+                        Student
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ student.student_name }}"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- ADMISSION NO -->
+
+                <div class="form-group">
+
+                    <label>
+                        Admission No.
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ student.admission_no }}"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- COURSE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Course
+                        <span style="color:#dc2626;">
+                            *
+                        </span>
+                    </label>
+
+                    <select
+                        name="course_id"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Course
+                        </option>
+
+                        {% for course in courses %}
+
+                            <option
+                                value="{{ course.id }}"
+                            >
+
+                                {{ course.course_name }}
+
+                                {% if course.course_code %}
+                                    ({{ course.course_code }})
+                                {% endif %}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- ENROLLMENT DATE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Enrollment Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="enrollment_date"
+                        class="form-control"
+                    >
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-control"
+                    >
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="Dropped">
+                            Dropped
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div style="
+            display:flex;
+            justify-content:flex-end;
+            gap:10px;
+            padding:0 22px 22px;
+        ">
+
+            <a
+                href="{{ url_for(
+                    'student_details',
+                    id=student.id
+                ) }}"
+                class="btn"
+                style="
+                    background:#f3f4f6;
+                    color:#374151;
+                "
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Assign Course
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+
+.assign-course-grid {
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:20px;
+
+}
+
+.assign-course-grid .form-group {
+    margin:0;
+}
+
+
+@media(max-width:650px) {
+
+    .assign-course-grid {
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

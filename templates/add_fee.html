@@ -1,180 +1,531 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+Add Fee Payment - Student Management System
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block page_title %}
+Add Fee Payment
+{% endblock %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>
+            Add Fee Payment
+        </h2>
+
+        <p>
+            Record a new student fee payment.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('fees') }}"
+        class="btn"
+        style="
+            background:#f3f4f6;
+            color:#374151;
+        "
     >
+        ← Back to Fees
+    </a>
 
-    <title>Add Fee Payment</title>
+</div>
 
-</head>
 
-<body>
+<!-- =========================
+     FLASH MESSAGES
+========================= -->
 
-    <h1>Add Fee Payment</h1>
+{% with messages = get_flashed_messages(
+    with_categories=true
+) %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
 
         {% for category, message in messages %}
 
-            <p>{{ message }}</p>
+            <div
+                style="
+                    margin-bottom:15px;
+                    padding:12px 15px;
+                    border-radius:8px;
+                    font-size:13px;
+
+                    {% if category == 'success' %}
+                        background:#dcfce7;
+                        color:#166534;
+                        border:1px solid #bbf7d0;
+                    {% else %}
+                        background:#fee2e2;
+                        color:#991b1b;
+                        border:1px solid #fecaca;
+                    {% endif %}
+                "
+            >
+
+                {{ message }}
+
+            </div>
 
         {% endfor %}
 
-    {% endwith %}
+    {% endif %}
 
-    <form method="POST">
+{% endwith %}
 
-        <label>Receipt No.</label>
 
-        <br>
+<!-- =========================
+     PAYMENT FORM
+========================= -->
 
-        <input
-            type="text"
-            name="receipt_no"
-            required
+<form
+    method="POST"
+    action="{{ url_for('add_fee') }}"
+>
+
+
+    <div
+        class="section-card"
+        style="margin-bottom:20px;"
+    >
+
+
+        <!-- HEADER -->
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Payment Information
+                </h3>
+
+                <p>
+                    Enter the fee payment details below.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM BODY -->
+
+        <div style="padding:22px;">
+
+            <div class="fee-form-grid">
+
+
+                <!-- =========================
+                     RECEIPT NUMBER
+                ========================= -->
+
+                <div class="form-group">
+
+                    <label>
+                        Receipt No.
+                        <span style="color:#dc2626;">
+                            *
+                        </span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="receipt_no"
+                        class="form-control"
+                        placeholder="Enter receipt number"
+                        value="{{ request.form.get('receipt_no', '') }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     STUDENT
+                ========================= -->
+
+                <div class="form-group">
+
+                    <label>
+                        Student
+                        <span style="color:#dc2626;">
+                            *
+                        </span>
+                    </label>
+
+                    <select
+                        name="student_id"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Student
+                        </option>
+
+                        {% for student in students %}
+
+                            <option
+                                value="{{ student.id }}"
+                                {% if request.form.get('student_id')|string == student.id|string %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ student.admission_no }}
+                                -
+                                {{ student.student_name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================
+                     COURSE
+                ========================= -->
+
+                <div class="form-group">
+
+                    <label>
+                        Course
+                    </label>
+
+                    <select
+                        name="course_id"
+                        class="form-control"
+                    >
+
+                        <option value="">
+                            Select Course
+                        </option>
+
+                        {% for course in courses %}
+
+                            <option
+                                value="{{ course.id }}"
+                                {% if request.form.get('course_id')|string == course.id|string %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ course.course_code }}
+                                -
+                                {{ course.course_name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================
+                     AMOUNT
+                ========================= -->
+
+                <div class="form-group">
+
+                    <label>
+                        Amount
+                        <span style="color:#dc2626;">
+                            *
+                        </span>
+                    </label>
+
+                    <div style="
+                        position:relative;
+                    ">
+
+                        <span style="
+                            position:absolute;
+                            left:12px;
+                            top:50%;
+                            transform:translateY(-50%);
+                            color:#6b7280;
+                            font-size:14px;
+                            z-index:1;
+                        ">
+                            ₹
+                        </span>
+
+                        <input
+                            type="number"
+                            name="amount"
+                            class="form-control"
+                            placeholder="0.00"
+                            value="{{ request.form.get('amount', '') }}"
+                            step="0.01"
+                            min="0"
+                            style="padding-left:30px;"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     PAYMENT DATE
+                ========================= -->
+
+                <div class="form-group">
+
+                    <label>
+                        Payment Date
+                        <span style="color:#dc2626;">
+                            *
+                        </span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="payment_date"
+                        class="form-control"
+                        value="{{ request.form.get('payment_date', '') }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- =========================
+                     PAYMENT MODE
+                ========================= -->
+
+                <div class="form-group">
+
+                    <label>
+                        Payment Mode
+                    </label>
+
+                    <select
+                        name="payment_mode"
+                        class="form-control"
+                    >
+
+                        {% set selected_mode =
+                            request.form.get(
+                                'payment_mode',
+                                'Cash'
+                            )
+                        %}
+
+                        <option
+                            value="Cash"
+                            {% if selected_mode == 'Cash' %}
+                                selected
+                            {% endif %}
+                        >
+                            Cash
+                        </option>
+
+                        <option
+                            value="UPI"
+                            {% if selected_mode == 'UPI' %}
+                                selected
+                            {% endif %}
+                        >
+                            UPI
+                        </option>
+
+                        <option
+                            value="Card"
+                            {% if selected_mode == 'Card' %}
+                                selected
+                            {% endif %}
+                        >
+                            Card
+                        </option>
+
+                        <option
+                            value="Bank Transfer"
+                            {% if selected_mode == 'Bank Transfer' %}
+                                selected
+                            {% endif %}
+                        >
+                            Bank Transfer
+                        </option>
+
+                        <option
+                            value="Other"
+                            {% if selected_mode == 'Other' %}
+                                selected
+                            {% endif %}
+                        >
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================
+                     REMARKS
+                ========================= -->
+
+                <div
+                    class="form-group"
+                    style="
+                        grid-column:1 / -1;
+                    "
+                >
+
+                    <label>
+                        Remarks
+                    </label>
+
+                    <textarea
+                        name="remarks"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Enter remarks (optional)"
+                    >{{ request.form.get('remarks', '') }}</textarea>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         ACTION BUTTONS
+    ========================= -->
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        align-items:center;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for('fees') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
         >
-
-        <br><br>
-
-
-        <label>Student</label>
-
-        <br>
-
-        <select name="student_id" required>
-
-            <option value="">
-                Select Student
-            </option>
-
-            {% for student in students %}
-
-                <option value="{{ student.id }}">
-
-                    {{ student.admission_no }}
-                    -
-                    {{ student.student_name }}
-
-                </option>
-
-            {% endfor %}
-
-        </select>
-
-        <br><br>
-
-
-        <label>Course</label>
-
-        <br>
-
-        <select name="course_id">
-
-            <option value="">
-                Select Course
-            </option>
-
-            {% for course in courses %}
-
-                <option value="{{ course.id }}">
-
-                    {{ course.course_code }}
-                    -
-                    {{ course.course_name }}
-
-                </option>
-
-            {% endfor %}
-
-        </select>
-
-        <br><br>
-
-
-        <label>Amount</label>
-
-        <br>
-
-        <input
-            type="number"
-            name="amount"
-            step="0.01"
-            min="0"
-            required
-        >
-
-        <br><br>
-
-
-        <label>Payment Date</label>
-
-        <br>
-
-        <input
-            type="date"
-            name="payment_date"
-            required
-        >
-
-        <br><br>
-
-
-        <label>Payment Mode</label>
-
-        <br>
-
-        <select name="payment_mode">
-
-            <option value="Cash">
-                Cash
-            </option>
-
-            <option value="UPI">
-                UPI
-            </option>
-
-            <option value="Card">
-                Card
-            </option>
-
-            <option value="Bank Transfer">
-                Bank Transfer
-            </option>
-
-            <option value="Other">
-                Other
-            </option>
-
-        </select>
-
-        <br><br>
-
-
-        <label>Remarks</label>
-
-        <br>
-
-        <textarea name="remarks"></textarea>
-
-        <br><br>
-
-
-        <button type="submit">
-            Save Payment
-        </button>
-
-        <a href="{{ url_for('fees') }}">
             Cancel
         </a>
 
-    </form>
 
-</body>
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Save Payment
+        </button>
 
-</html>
+    </div>
+
+
+</form>
+
+
+<!-- =========================
+     PAGE CSS
+========================= -->
+
+<style>
+
+.fee-form-grid {
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:20px;
+
+}
+
+
+.fee-form-grid .form-group {
+
+    margin:0;
+
+}
+
+
+.fee-form-grid label {
+
+    display:block;
+
+    margin-bottom:7px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#374151;
+
+}
+
+
+.fee-form-grid .form-control {
+
+    width:100%;
+
+}
+
+
+.fee-form-grid textarea {
+
+    resize:vertical;
+
+    min-height:100px;
+
+}
+
+
+@media (max-width:700px) {
+
+    .fee-form-grid {
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .fee-form-grid .form-group {
+
+        grid-column:auto !important;
+
+    }
+
+
+    .page-header {
+
+        align-items:flex-start;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

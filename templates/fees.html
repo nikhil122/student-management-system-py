@@ -33,7 +33,77 @@ Fee Payments
 
 </div>
 
+<!-- =========================
+     FEE SUMMARY
+========================= -->
 
+<div class="fee-summary-grid">
+
+
+    <!-- TOTAL FEES -->
+
+    <div class="fee-summary-card">
+
+        <div class="fee-summary-label">
+            Total Fees
+        </div>
+
+        <div class="fee-summary-value">
+            ₹ {{ "%.2f"|format(total_fees or 0) }}
+        </div>
+
+        <div class="fee-summary-note">
+            Total assigned course fees
+        </div>
+
+    </div>
+
+
+    <!-- PAID -->
+
+    <div class="fee-summary-card">
+
+        <div class="fee-summary-label">
+            Paid Fees
+        </div>
+
+        <div
+            class="fee-summary-value"
+            style="color:#16a34a;"
+        >
+            ₹ {{ "%.2f"|format(total_collected or 0) }}
+        </div>
+
+        <div class="fee-summary-note">
+            Total amount collected
+        </div>
+
+    </div>
+
+
+    <!-- REMAINING -->
+
+    <div class="fee-summary-card">
+
+        <div class="fee-summary-label">
+            Remaining Fees
+        </div>
+
+        <div
+            class="fee-summary-value"
+            style="color:#dc2626;"
+        >
+            ₹ {{ "%.2f"|format(total_remaining or 0) }}
+        </div>
+
+        <div class="fee-summary-note">
+            Amount pending
+        </div>
+
+    </div>
+
+
+</div>
 <!-- FILTER -->
 
 <div
@@ -225,7 +295,17 @@ Fee Payments
                         <th>Course</th>
 
                         <th>Amount</th>
+                            <th>
+                                Total Fees
+                            </th>
 
+                            <th>
+                                Paid
+                            </th>
+
+                            <th>
+                                Remaining
+                            </th>
                         <th>Payment Date</th>
 
                         <th>Mode</th>
@@ -286,6 +366,82 @@ Fee Payments
                                 </strong>
 
                             </td>
+
+                            <td>
+
+    {% if payment.total_fees is not none %}
+
+        ₹ {{ "%.2f"|format(
+            payment.total_fees or 0
+        ) }}
+
+    {% else %}
+
+        -
+
+    {% endif %}
+
+</td>
+
+
+<td>
+
+    {% if payment.paid_fees is not none %}
+
+        <strong style="color:#16a34a;">
+
+            ₹ {{ "%.2f"|format(
+                payment.paid_fees or 0
+            ) }}
+
+        </strong>
+
+    {% else %}
+
+        -
+
+    {% endif %}
+
+</td>
+
+
+<td>
+
+    {% if payment.remaining_fees is not none %}
+
+        {% if payment.remaining_fees == 0 %}
+
+            <span style="
+                display:inline-block;
+                padding:5px 9px;
+                border-radius:20px;
+                background:#dcfce7;
+                color:#166534;
+                font-size:11px;
+                font-weight:600;
+            ">
+                Paid
+            </span>
+
+        {% else %}
+
+            <strong style="color:#dc2626;">
+
+                ₹ {{ "%.2f"|format(
+                    payment.remaining_fees
+                ) }}
+
+            </strong>
+
+        {% endif %}
+
+    {% else %}
+
+        -
+
+    {% endif %}
+
+</td>
 
 
                             <td>
@@ -430,6 +586,102 @@ Fee Payments
     .fee-filter-form .filter-actions .btn {
         flex:1;
         text-align:center;
+    }
+
+}
+
+/* =========================
+   FEE SUMMARY
+========================= */
+
+.fee-summary-grid {
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap:18px;
+
+    margin-bottom:20px;
+
+}
+
+
+.fee-summary-card {
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:
+        0 2px 10px rgba(
+            0,
+            0,
+            0,
+            .03
+        );
+
+}
+
+
+.fee-summary-label {
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#6b7280;
+
+    margin-bottom:8px;
+
+}
+
+
+.fee-summary-value {
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+
+
+.fee-summary-note {
+
+    margin-top:6px;
+
+    font-size:11px;
+
+    color:#9ca3af;
+
+}
+
+
+@media (max-width:800px) {
+
+    .fee-summary-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width:550px) {
+
+    .fee-summary-grid {
+
+        grid-template-columns:1fr;
+
     }
 
 }
