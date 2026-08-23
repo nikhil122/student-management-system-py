@@ -118,8 +118,11 @@ def get_db_connection():
 # =========================
 
 @app.route("/")
-def index():
-    return render_template("index.html")
+def home():
+
+    return redirect(
+        url_for("login")
+    )
 
 # =========================
 # AUTHENTICATION
