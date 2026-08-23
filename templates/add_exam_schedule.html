@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Exam Schedule - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Add Exam Schedule
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Add Exam Schedule</h2>
+
+        <p>
+            Create a subject-wise examination schedule.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('exam_schedule') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Schedule
+        </a>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('add_exam_schedule') }}"
+>
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Schedule Information
+                </h3>
+
+                <p>
+                    Enter examination schedule details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div class="schedule-form-grid">
+
+                <!-- Exam -->
+
+                <div class="form-group">
+
+                    <label>
+                        Exam
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <select
+                        name="exam_id"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Exam
+                        </option>
+
+                        {% for exam in exams %}
+
+                            <option
+                                value="{{ exam.id }}"
+                            >
+                                {{ exam.exam_name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Subject -->
+
+                <div class="form-group">
+
+                    <label>
+                        Subject
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="subject_name"
+                        class="form-control"
+                        placeholder="Enter subject name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Exam Date -->
+
+                <div class="form-group">
+
+                    <label>
+                        Exam Date
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="exam_date"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Start Time -->
+
+                <div class="form-group">
+
+                    <label>
+                        Start Time
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="time"
+                        name="start_time"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- End Time -->
+
+                <div class="form-group">
+
+                    <label>
+                        End Time
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="time"
+                        name="end_time"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Room -->
+
+                <div class="form-group">
+
+                    <label>
+                        Room No.
+                    </label>
+
+                    <input
+                        type="text"
+                        name="room_no"
+                        class="form-control"
+                        placeholder="Enter room number"
+                    >
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Optional description"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for('exam_schedule') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Save Schedule
+        </button>
+
+    </div>
+
+</form>
+
+
+<style>
+
+.schedule-form-grid {
+    display:grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap:20px;
+}
+
+@media (max-width:650px) {
+
+    .schedule-form-grid {
+        grid-template-columns:1fr;
+    }
+
+    .schedule-form-grid [style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

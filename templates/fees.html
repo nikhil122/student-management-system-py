@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}
+Fee Payments - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Fee Payments
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Fee Payments</h2>
+
+        <p>
+            Manage student fee payment records.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('add_fee') }}"
+            class="btn btn-primary"
+        >
+            + Collect Fee
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- FILTER -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Filter Payments
+            </h3>
+
+            <p>
+                Search fee payment records.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:20px;">
+
+        <form
+            method="GET"
+            action="{{ url_for('fees') }}"
+            class="fee-filter-form"
+        >
+
+            <div class="filter-field">
+
+                <label>
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Receipt, student or admission no."
+                    value="{{ search or '' }}"
+                >
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label>
+                    Payment Mode
+                </label>
+
+                <select
+                    name="payment_mode"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        All Modes
+                    </option>
+
+                    <option
+                        value="Cash"
+                        {% if payment_mode == 'Cash' %}
+                            selected
+                        {% endif %}
+                    >
+                        Cash
+                    </option>
+
+                    <option
+                        value="UPI"
+                        {% if payment_mode == 'UPI' %}
+                            selected
+                        {% endif %}
+                    >
+                        UPI
+                    </option>
+
+                    <option
+                        value="Card"
+                        {% if payment_mode == 'Card' %}
+                            selected
+                        {% endif %}
+                    >
+                        Card
+                    </option>
+
+                    <option
+                        value="Bank Transfer"
+                        {% if payment_mode == 'Bank Transfer' %}
+                            selected
+                        {% endif %}
+                    >
+                        Bank Transfer
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Filter
+                </button>
+
+                <a
+                    href="{{ url_for('fees') }}"
+                    class="btn"
+                    style="
+                        background:#f3f4f6;
+                        color:#374151;
+                    "
+                >
+                    Clear
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- PAYMENT TABLE -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Payment Records
+            </h3>
+
+            <p>
+                All collected fee payments
+            </p>
+
+        </div>
+
+        <div>
+
+            <span style="
+                color:#6b7280;
+                font-size:12px;
+            ">
+
+                Total:
+
+                <strong>
+                    {{ payments|length }}
+                </strong>
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if payments %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Receipt No.</th>
+
+                        <th>Student</th>
+
+                        <th>Course</th>
+
+                        <th>Amount</th>
+
+                        <th>Payment Date</th>
+
+                        <th>Mode</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for payment in payments %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ payment.receipt_no }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                {{ payment.student_name }}
+
+                                <small style="
+                                    display:block;
+                                    color:#6b7280;
+                                    margin-top:3px;
+                                ">
+                                    {{ payment.admission_no }}
+                                </small>
+
+                            </td>
+
+
+                            <td>
+                                {{ payment.course_name or '-' }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    ₹ {{ "%.2f"|format(
+                                        payment.amount or 0
+                                    ) }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ payment.payment_date }}
+                            </td>
+
+
+                            <td>
+                                {{ payment.payment_mode or '-' }}
+                            </td>
+
+
+                            <td>
+
+                                <div style="
+                                    display:flex;
+                                    gap:6px;
+                                    flex-wrap:wrap;
+                                ">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'fee_details',
+                                            id=payment.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        View
+                                    </a>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'edit_fee',
+                                            id=payment.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'fee_receipt',
+                                            id=payment.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        Receipt
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div style="
+                font-size:35px;
+                margin-bottom:10px;
+            ">
+                💰
+            </div>
+
+            <strong>
+                No fee payments found
+            </strong>
+
+            <p style="margin-top:6px;">
+                Start by collecting a student fee payment.
+            </p>
+
+            <br>
+
+            <a
+                href="{{ url_for('add_fee') }}"
+                class="btn btn-primary"
+            >
+                + Collect Fee
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+.fee-filter-form {
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.fee-filter-form .filter-field {
+    width:240px;
+}
+
+.fee-filter-form .filter-field label {
+    display:block;
+    margin-bottom:7px;
+    font-size:13px;
+    font-weight:600;
+    color:#374151;
+}
+
+.fee-filter-form .filter-actions {
+    display:flex;
+    gap:8px;
+}
+
+
+@media (max-width:650px) {
+
+    .fee-filter-form {
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .fee-filter-form .filter-field {
+        width:100%;
+    }
+
+    .fee-filter-form .filter-actions {
+        width:100%;
+    }
+
+    .fee-filter-form .filter-actions .btn {
+        flex:1;
+        text-align:center;
+    }
+
+}
+
+</style>
+
+{% endblock %}

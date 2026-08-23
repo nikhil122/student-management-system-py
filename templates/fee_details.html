@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+
+{% block title %}
+Fee Payment Details - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Fee Payment Details
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Fee Payment Details</h2>
+
+        <p>
+            View complete fee payment information.
+        </p>
+    </div>
+
+    <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+    ">
+
+        <a
+            href="{{ url_for('fees') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Fee Payments
+        </a>
+
+        <a
+            href="{{ url_for('edit_fee', id=payment.id) }}"
+            class="btn btn-primary"
+        >
+            Edit Payment
+        </a>
+
+        <a
+            href="{{ url_for('fee_receipt', id=payment.id) }}"
+            class="btn"
+            style="
+                background:#ede9fe;
+                color:#6d28d9;
+            "
+        >
+            View Receipt
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     PAYMENT SUMMARY
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div style="
+        padding:25px;
+        display:flex;
+        align-items:center;
+        gap:20px;
+        flex-wrap:wrap;
+    ">
+
+        <div style="
+            width:80px;
+            height:80px;
+            border-radius:14px;
+            background:#f3e8ff;
+            color:#9333ea;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:36px;
+        ">
+            ₹
+        </div>
+
+
+        <div>
+
+            <h2 style="
+                margin-bottom:8px;
+                font-size:24px;
+            ">
+                ₹ {{ "%.2f"|format(payment.amount or 0) }}
+            </h2>
+
+            <p style="
+                color:#6b7280;
+                margin-bottom:5px;
+            ">
+                Receipt No:
+
+                <strong>
+                    {{ payment.receipt_no }}
+                </strong>
+            </p>
+
+            <p style="
+                color:#6b7280;
+            ">
+                Payment Date:
+
+                <strong>
+                    {{ payment.payment_date }}
+                </strong>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     STUDENT INFORMATION
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Student Information
+            </h3>
+
+            <p>
+                Student associated with this payment
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div
+            class="details-grid"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+                gap:20px;
+            "
+        >
+
+            <div>
+
+                <div class="stat-card-label">
+                    Admission Number
+                </div>
+
+                <strong>
+                    {{ payment.admission_no }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Student Name
+                </div>
+
+                <strong>
+                    {{ payment.student_name }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Course
+                </div>
+
+                <strong>
+                    {{ payment.course_name or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     PAYMENT INFORMATION
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Payment Information
+            </h3>
+
+            <p>
+                Complete payment details
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div
+            class="details-grid"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+                gap:20px;
+            "
+        >
+
+            <div>
+
+                <div class="stat-card-label">
+                    Receipt Number
+                </div>
+
+                <strong>
+                    {{ payment.receipt_no }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Amount
+                </div>
+
+                <strong>
+                    ₹ {{ "%.2f"|format(
+                        payment.amount or 0
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Payment Date
+                </div>
+
+                <strong>
+                    {{ payment.payment_date }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Payment Mode
+                </div>
+
+                <strong>
+                    {{ payment.payment_mode or '-' }}
+                </strong>
+
+            </div>
+
+
+            <div style="
+                grid-column:1 / -1;
+            ">
+
+                <div class="stat-card-label">
+                    Remarks
+                </div>
+
+                <strong>
+                    {{ payment.remarks or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SYSTEM INFORMATION
+========================= -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                System Information
+            </h3>
+
+            <p>
+                Payment record information
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div
+            class="details-grid"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+                gap:20px;
+            "
+        >
+
+            <div>
+
+                <div class="stat-card-label">
+                    Payment ID
+                </div>
+
+                <strong>
+                    #{{ payment.id }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Created At
+                </div>
+
+                <strong>
+                    {{ payment.created_at or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+@media (max-width:700px) {
+
+    .details-grid {
+        grid-template-columns:1fr !important;
+    }
+
+    .details-grid > div[style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

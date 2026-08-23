@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Course - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Edit Course
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Edit Course</h2>
+
+        <p>
+            Update course information.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('course_details', id=course.id) }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Details
+        </a>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('edit_course', id=course.id) }}"
+>
+
+
+    <!-- =========================
+         COURSE INFORMATION
+    ========================== -->
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Course Information
+                </h3>
+
+                <p>
+                    Update course details
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div
+                class="course-form-grid"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap:20px;
+                "
+            >
+
+                <!-- Course Name -->
+
+                <div class="form-group">
+
+                    <label>
+                        Course Name
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="course_name"
+                        class="form-control"
+                        value="{{ course.course_name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Course Code -->
+
+                <div class="form-group">
+
+                    <label>
+                        Course Code
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="course_code"
+                        class="form-control"
+                        value="{{ course.course_code }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Duration -->
+
+                <div class="form-group">
+
+                    <label>
+                        Duration
+                    </label>
+
+                    <input
+                        type="text"
+                        name="duration"
+                        class="form-control"
+                        value="{{ course.duration or '' }}"
+                        placeholder="e.g. 3 Years / 6 Months"
+                    >
+
+                </div>
+
+
+                <!-- Total Fees -->
+
+                <div class="form-group">
+
+                    <label>
+                        Total Fees
+                    </label>
+
+                    <input
+                        type="number"
+                        name="total_fees"
+                        class="form-control"
+                        value="{{ course.total_fees or 0 }}"
+                        min="0"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-control"
+                    >
+
+                        <option
+                            value="Active"
+                            {% if course.status == 'Active' %}
+                                selected
+                            {% endif %}
+                        >
+                            Active
+                        </option>
+
+                        <option
+                            value="Inactive"
+                            {% if course.status == 'Inactive' %}
+                                selected
+                            {% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="6"
+                        placeholder="Enter course description"
+                    >{{ course.description or '' }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACTIONS
+    ========================== -->
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for(
+                'course_details',
+                id=course.id
+            ) }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Update Course
+        </button>
+
+    </div>
+
+
+</form>
+
+
+<style>
+
+@media (max-width: 650px) {
+
+    .course-form-grid {
+        grid-template-columns:1fr !important;
+    }
+
+    .course-form-grid [style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block title %}
+Courses - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Courses
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Courses</h2>
+
+        <p>
+            Manage all courses offered by the institution.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('add_course') }}"
+            class="btn btn-primary"
+        >
+            + Add Course
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- SEARCH -->
+
+<div
+    class="card"
+    style="margin-bottom:20px;"
+>
+
+    <form
+        method="GET"
+        action="{{ url_for('courses') }}"
+        style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        "
+    >
+
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search course name or code..."
+            value="{{ search or '' }}"
+            style="max-width:420px;"
+        >
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Search
+        </button>
+
+        <a
+            href="{{ url_for('courses') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Clear
+        </a>
+
+    </form>
+
+</div>
+
+
+<!-- COURSE TABLE -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Course List
+            </h3>
+
+            <p>
+                All registered courses
+            </p>
+
+        </div>
+
+        <div>
+
+            <span style="
+                color:#6b7280;
+                font-size:12px;
+            ">
+
+                Total:
+
+                <strong>
+                    {{ courses|length }}
+                </strong>
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if courses %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Course Code
+                        </th>
+
+                        <th>
+                            Course Name
+                        </th>
+
+                        <th>
+                            Duration
+                        </th>
+
+                        <th>
+                            Total Fees
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for course in courses %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ course.course_code }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ course.course_name }}
+                            </td>
+
+
+                            <td>
+                                {{ course.duration or '-' }}
+                            </td>
+
+
+                            <td>
+                                ₹ {{ "%.2f"|format(
+                                    course.total_fees or 0
+                                ) }}
+                            </td>
+
+
+                            <td>
+
+                                {% if course.status == 'Active' %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#dcfce7;
+                                        color:#166534;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#fee2e2;
+                                        color:#991b1b;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        {{ course.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                <div style="
+                                    display:flex;
+                                    gap:6px;
+                                    flex-wrap:wrap;
+                                ">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'course_details',
+                                            id=course.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        View
+                                    </a>
+
+
+                                    <a
+                                        href="{{ url_for(
+                                            'edit_course',
+                                            id=course.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        Edit
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div style="
+                font-size:35px;
+                margin-bottom:10px;
+            ">
+                📚
+            </div>
+
+            <strong>
+                No courses found
+            </strong>
+
+            <p style="
+                margin-top:6px;
+            ">
+                Start by adding a new course.
+            </p>
+
+            <br>
+
+            <a
+                href="{{ url_for('add_course') }}"
+                class="btn btn-primary"
+            >
+                + Add Course
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

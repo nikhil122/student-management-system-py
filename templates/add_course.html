@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Course - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Add Course
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Add Course</h2>
+
+        <p>
+            Create a new course in the system.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('courses') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Courses
+        </a>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('add_course') }}"
+>
+
+
+    <!-- =========================
+         COURSE INFORMATION
+    ========================== -->
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Course Information
+                </h3>
+
+                <p>
+                    Basic course details
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div
+                class="course-form-grid"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap:20px;
+                "
+            >
+
+                <!-- Course Name -->
+
+                <div class="form-group">
+
+                    <label>
+                        Course Name
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="course_name"
+                        class="form-control"
+                        placeholder="Enter course name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Course Code -->
+
+                <div class="form-group">
+
+                    <label>
+                        Course Code
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="course_code"
+                        class="form-control"
+                        placeholder="Enter course code"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Duration -->
+
+                <div class="form-group">
+
+                    <label>
+                        Duration
+                    </label>
+
+                    <input
+                        type="text"
+                        name="duration"
+                        class="form-control"
+                        placeholder="e.g. 3 Years / 6 Months"
+                    >
+
+                </div>
+
+
+                <!-- Total Fees -->
+
+                <div class="form-group">
+
+                    <label>
+                        Total Fees
+                    </label>
+
+                    <input
+                        type="number"
+                        name="total_fees"
+                        class="form-control"
+                        placeholder="Enter total fees"
+                        min="0"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-control"
+                    >
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Enter course description"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACTIONS
+    ========================== -->
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for('courses') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Save Course
+        </button>
+
+    </div>
+
+
+</form>
+
+
+<style>
+
+@media (max-width: 650px) {
+
+    .course-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .course-form-grid [style*="grid-column"] {
+        grid-column: auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

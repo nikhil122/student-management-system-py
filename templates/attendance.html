@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}
+Attendance - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Attendance
+{% endblock %}
+
+{% block content %}
+<style>
+
+.attendance-filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.attendance-filter-form .filter-field {
+    width: 190px;
+}
+
+.attendance-filter-form .filter-field label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.attendance-filter-form .filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.attendance-filter-form .form-control {
+    height: 44px;
+    box-sizing: border-box;
+}
+
+
+@media (max-width: 650px) {
+
+    .attendance-filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .attendance-filter-form .filter-field {
+        width: 100%;
+    }
+
+    .attendance-filter-form .filter-actions {
+        width: 100%;
+    }
+
+    .attendance-filter-form .filter-actions .btn {
+        flex: 1;
+        text-align: center;
+    }
+
+}
+
+</style>
+
+<div class="page-header">
+
+    <div>
+        <h2>Attendance</h2>
+
+        <p>
+            Manage and monitor student attendance.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('mark_attendance') }}"
+            class="btn btn-primary"
+        >
+            + Mark Attendance
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- FILTER -->
+
+<!-- =========================
+     ATTENDANCE FILTER
+========================= -->
+
+<div
+    class="section-card attendance-filter-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Filter Attendance
+            </h3>
+
+            <p>
+                Filter records by date and attendance status
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:20px;">
+
+        <form
+            method="GET"
+            action="{{ url_for('attendance') }}"
+            class="attendance-filter-form"
+        >
+
+            <!-- DATE -->
+
+            <div class="filter-field">
+
+                <label for="attendance_date">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="attendance_date"
+                    name="date"
+                    class="form-control"
+                    value="{{ selected_date or '' }}"
+                >
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="filter-field">
+
+                <label for="attendance_status">
+                    Status
+                </label>
+
+                <select
+                    id="attendance_status"
+                    name="status"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option
+                        value="Present"
+                        {% if selected_status == 'Present' %}
+                            selected
+                        {% endif %}
+                    >
+                        Present
+                    </option>
+
+                    <option
+                        value="Absent"
+                        {% if selected_status == 'Absent' %}
+                            selected
+                        {% endif %}
+                    >
+                        Absent
+                    </option>
+
+                    <option
+                        value="Leave"
+                        {% if selected_status == 'Leave' %}
+                            selected
+                        {% endif %}
+                    >
+                        Leave
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Filter
+                </button>
+
+                <a
+                    href="{{ url_for('attendance') }}"
+                    class="btn"
+                    style="
+                        background:#f3f4f6;
+                        color:#374151;
+                    "
+                >
+                    Clear
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ATTENDANCE TABLE -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Attendance Records
+            </h3>
+
+            <p>
+                Student attendance history
+            </p>
+
+        </div>
+
+        <div>
+
+            <span style="
+                color:#6b7280;
+                font-size:12px;
+            ">
+
+                Total:
+
+                <strong>
+                    {{ attendance_records|length }}
+                </strong>
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if attendance_records %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Admission No.
+                        </th>
+
+                        <th>
+                            Student Name
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Remarks
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for record in attendance_records %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            <td>
+                                {{ record.attendance_date }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ record.admission_no }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ record.student_name }}
+                            </td>
+
+
+                            <td>
+
+                                {% if record.status == 'Present' %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#dcfce7;
+                                        color:#166534;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        Present
+                                    </span>
+
+                                {% elif record.status == 'Absent' %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#fee2e2;
+                                        color:#991b1b;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        Absent
+                                    </span>
+
+                                {% else %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#fef3c7;
+                                        color:#92400e;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        {{ record.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {{ record.remarks or '-' }}
+                            </td>
+
+
+                            <td>
+
+                                <a
+                                    href="{{ url_for(
+                                        'edit_attendance',
+                                        id=record.id
+                                    ) }}"
+                                    class="table-action"
+                                >
+                                    Edit
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div style="
+                font-size:35px;
+                margin-bottom:10px;
+            ">
+                📋
+            </div>
+
+            <strong>
+                No attendance records found
+            </strong>
+
+            <p style="
+                margin-top:6px;
+            ">
+                Start by marking student attendance.
+            </p>
+
+            <br>
+
+            <a
+                href="{{ url_for('mark_attendance') }}"
+                class="btn btn-primary"
+            >
+                + Mark Attendance
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

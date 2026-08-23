@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Enroll Student</title>
+</head>
+
+<body>
+
+    <h1>Enroll Student in Course</h1>
+
+    <hr>
+
+    <p>
+        <strong>Student:</strong>
+        {{ student.student_name }}
+    </p>
+
+    <p>
+        <strong>Admission No.:</strong>
+        {{ student.admission_no }}
+    </p>
+
+    <hr>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <p>{{ message }}</p>
+
+        {% endfor %}
+
+    {% endwith %}
+
+    <form method="POST">
+
+        <label>Course</label>
+
+        <br>
+
+        <select name="course_id" required>
+
+            <option value="">
+                Select Course
+            </option>
+
+            {% for course in courses %}
+
+                <option value="{{ course.id }}">
+
+                    {{ course.course_code }}
+                    -
+                    {{ course.course_name }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+
+        <label>Enrollment Date</label>
+
+        <br>
+
+        <input
+            type="date"
+            name="enrollment_date"
+            value="{{ current_date if current_date else '' }}"
+        >
+
+        <br><br>
+
+
+        <label>Status</label>
+
+        <br>
+
+        <select name="status">
+
+            <option value="Active">
+                Active
+            </option>
+
+            <option value="Completed">
+                Completed
+            </option>
+
+            <option value="Dropped">
+                Dropped
+            </option>
+
+        </select>
+
+        <br><br>
+
+
+        <button type="submit">
+            Enroll Student
+        </button>
+
+        <a href="{{ url_for('student_details', id=student.id) }}">
+            Cancel
+        </a>
+
+    </form>
+
+</body>
+
+</html>

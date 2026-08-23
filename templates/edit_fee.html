@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Fee Payment - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Edit Fee Payment
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Edit Fee Payment</h2>
+
+        <p>
+            Update fee payment information.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('fees') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Fees
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     PAYMENT INFORMATION
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Payment Information
+            </h3>
+
+            <p>
+                Student and course information
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div
+            class="fee-info-grid"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+                gap:20px;
+            "
+        >
+
+            <div>
+
+                <div class="stat-card-label">
+                    Receipt Number
+                </div>
+
+                <strong>
+                    {{ payment.receipt_no }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Student
+                </div>
+
+                <strong>
+                    {{ payment.student_name }}
+                </strong>
+
+                <small style="
+                    display:block;
+                    color:#6b7280;
+                    margin-top:4px;
+                ">
+                    {{ payment.admission_no }}
+                </small>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Course
+                </div>
+
+                <strong>
+                    {{ payment.course_name or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('edit_fee', id=payment.id) }}"
+>
+
+
+    <!-- =========================
+         EDIT PAYMENT
+    ========================== -->
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Payment Details
+                </h3>
+
+                <p>
+                    Update amount, date and payment mode.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div
+                class="fee-form-grid"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap:20px;
+                "
+            >
+
+                <!-- Amount -->
+
+                <div class="form-group">
+
+                    <label>
+                        Amount
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        name="amount"
+                        class="form-control"
+                        value="{{ payment.amount or 0 }}"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Payment Date -->
+
+                <div class="form-group">
+
+                    <label>
+                        Payment Date
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="payment_date"
+                        class="form-control"
+                        value="{{ payment.payment_date }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Payment Mode -->
+
+                <div class="form-group">
+
+                    <label>
+                        Payment Mode
+                    </label>
+
+                    <select
+                        name="payment_mode"
+                        class="form-control"
+                    >
+
+                        <option
+                            value=""
+                            {% if not payment.payment_mode %}
+                                selected
+                            {% endif %}
+                        >
+                            Select Payment Mode
+                        </option>
+
+                        <option
+                            value="Cash"
+                            {% if payment.payment_mode == 'Cash' %}
+                                selected
+                            {% endif %}
+                        >
+                            Cash
+                        </option>
+
+                        <option
+                            value="UPI"
+                            {% if payment.payment_mode == 'UPI' %}
+                                selected
+                            {% endif %}
+                        >
+                            UPI
+                        </option>
+
+                        <option
+                            value="Card"
+                            {% if payment.payment_mode == 'Card' %}
+                                selected
+                            {% endif %}
+                        >
+                            Card
+                        </option>
+
+                        <option
+                            value="Bank Transfer"
+                            {% if payment.payment_mode == 'Bank Transfer' %}
+                                selected
+                            {% endif %}
+                        >
+                            Bank Transfer
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Remarks -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Remarks
+                    </label>
+
+                    <textarea
+                        name="remarks"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Optional remarks"
+                    >{{ payment.remarks or '' }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACTIONS
+    ========================== -->
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for(
+                'fees'
+            ) }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Update Payment
+        </button>
+
+    </div>
+
+</form>
+
+
+<style>
+
+@media (max-width: 700px) {
+
+    .fee-info-grid,
+    .fee-form-grid {
+        grid-template-columns:1fr !important;
+    }
+
+    .fee-form-grid [style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

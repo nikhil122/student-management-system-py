@@ -1,0 +1,490 @@
+{% extends "base.html" %}
+
+{% block title %}
+Results - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Results
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Results</h2>
+
+        <p>
+            Manage student examination results.
+        </p>
+
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('add_result') }}"
+            class="btn btn-primary"
+        >
+            + Add Result
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- FILTER -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Filter Results
+            </h3>
+
+            <p>
+                Search and filter student results.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:20px;">
+
+        <form
+            method="GET"
+            action="{{ url_for('results') }}"
+            class="results-filter-form"
+        >
+
+            <!-- Student -->
+
+            <div class="filter-field">
+
+                <label>
+                    Student
+                </label>
+
+                <select
+                    name="student_id"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        All Students
+                    </option>
+
+                    {% for student in students %}
+
+                        <option
+                            value="{{ student.id }}"
+                            {% if student_id|string == student.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ student.student_name }}
+                            {% if student.admission_no %}
+                                - {{ student.admission_no }}
+                            {% endif %}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Exam -->
+
+            <div class="filter-field">
+
+                <label>
+                    Exam
+                </label>
+
+                <select
+                    name="exam_id"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        All Exams
+                    </option>
+
+                    {% for exam in exams %}
+
+                        <option
+                            value="{{ exam.id }}"
+                            {% if exam_id|string == exam.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ exam.exam_name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Subject -->
+
+            <div class="filter-field">
+
+                <label>
+                    Subject
+                </label>
+
+                <input
+                    type="text"
+                    name="subject"
+                    class="form-control"
+                    placeholder="Search subject..."
+                    value="{{ subject or '' }}"
+                >
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Filter
+                </button>
+
+                <a
+                    href="{{ url_for('results') }}"
+                    class="btn"
+                    style="
+                        background:#f3f4f6;
+                        color:#374151;
+                    "
+                >
+                    Clear
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- RESULTS TABLE -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Result List
+            </h3>
+
+            <p>
+                Student examination results.
+            </p>
+
+        </div>
+
+        <div>
+
+            <span style="
+                color:#6b7280;
+                font-size:12px;
+            ">
+
+                Total:
+
+                <strong>
+                    {{ results|length }}
+                </strong>
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if results %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Student</th>
+
+                        <th>Exam</th>
+
+                        <th>Subject</th>
+
+                        <th>Marks</th>
+
+                        <th>Grade</th>
+
+                        <th>Remarks</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for result in results %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ result.student_name }}
+                                </strong>
+
+                                <br>
+
+                                <small style="
+                                    color:#6b7280;
+                                ">
+                                    {{ result.admission_no }}
+                                </small>
+
+                            </td>
+
+
+                            <td>
+                                {{ result.exam_name }}
+                            </td>
+
+
+                            <td>
+                                {{ result.subject }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ "%.2f"|format(result.marks) }}
+                                </strong>
+
+                                /
+
+                                {{ "%.2f"|format(result.max_marks) }}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if result.grade %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#f3e8ff;
+                                        color:#7e22ce;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        {{ result.grade }}
+                                    </span>
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {{ result.remarks or '-' }}
+                            </td>
+
+
+                            <td>
+
+                                <div style="
+                                    display:flex;
+                                    gap:6px;
+                                    flex-wrap:wrap;
+                                ">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'result_details',
+                                            id=result.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        View
+                                    </a>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'edit_result',
+                                            id=result.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        Edit
+                                    </a>
+<form
+    method="POST"
+    action="{{ url_for('delete_result', id=result.id) }}"
+    style="display:inline;"
+    onsubmit="return confirm('Are you sure you want to delete this result?');"
+>
+
+    <button
+        type="submit"
+        class="table-action"
+        style="
+           
+            color:#dc2626;
+        "
+    >
+        Delete
+    </button>
+
+</form>
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div style="
+                font-size:35px;
+                margin-bottom:10px;
+            ">
+                🏆
+            </div>
+
+            <strong>
+                No results found
+            </strong>
+
+            <p style="margin-top:6px;">
+                Add a student result to get started.
+            </p>
+
+            <br>
+
+            <a
+                href="{{ url_for('add_result') }}"
+                class="btn btn-primary"
+            >
+                + Add Result
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+.results-filter-form {
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.results-filter-form .filter-field {
+    width:230px;
+}
+
+.results-filter-form .filter-field label {
+    display:block;
+    margin-bottom:7px;
+    font-size:13px;
+    font-weight:600;
+    color:#374151;
+}
+
+.results-filter-form .filter-actions {
+    display:flex;
+    gap:8px;
+}
+
+
+@media (max-width:650px) {
+
+    .results-filter-form {
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .results-filter-form .filter-field {
+        width:100%;
+    }
+
+    .results-filter-form .filter-actions {
+        width:100%;
+    }
+
+    .results-filter-form .filter-actions .btn {
+        flex:1;
+        text-align:center;
+    }
+
+}
+
+</style>
+
+{% endblock %}

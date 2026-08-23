@@ -1,0 +1,622 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Dashboard Overview</h2>
+
+        <p>
+            Welcome back, {{ session.name }}.
+        </p>
+    </div>
+
+</div>
+
+
+<!-- STAT CARDS -->
+
+<div class="dashboard-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-card-label">
+            Total Students
+        </div>
+
+        <div class="stat-card-value">
+            {{ total_students }}
+        </div>
+
+        <a
+            href="{{ url_for('students') }}"
+            class="stat-card-link"
+        >
+            View Students →
+        </a>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-label">
+            Total Teachers
+        </div>
+
+        <div class="stat-card-value">
+            {{ total_teachers }}
+        </div>
+
+        <a
+            href="{{ url_for('teachers') }}"
+            class="stat-card-link"
+        >
+            View Teachers →
+        </a>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-label">
+            Total Courses
+        </div>
+
+        <div class="stat-card-value">
+            {{ total_courses }}
+        </div>
+
+        <a
+            href="{{ url_for('courses') }}"
+            class="stat-card-link"
+        >
+            View Courses →
+        </a>
+
+    </div>
+
+    <div class="stat-card">
+
+    <div class="stat-card-label">
+        Total Exams
+    </div>
+
+    <div class="stat-card-value">
+        {{ total_exams }}
+    </div>
+
+    <a
+        href="{{ url_for('exams') }}"
+        class="stat-card-link"
+    >
+        View Exams →
+    </a>
+
+</div>
+
+
+<div class="stat-card">
+
+    <div class="stat-card-label">
+        Total Results
+    </div>
+
+    <div class="stat-card-value">
+        {{ total_results }}
+    </div>
+
+    <a
+        href="{{ url_for('results') }}"
+        class="stat-card-link"
+    >
+        View Results →
+    </a>
+
+</div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-label">
+            Active Enrollments
+        </div>
+
+        <div class="stat-card-value">
+            {{ total_enrollments }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-label">
+            Total Fees Collected
+        </div>
+
+        <div class="stat-card-value">
+            ₹ {{ "%.2f"|format(total_fees) }}
+        </div>
+
+        <a
+            href="{{ url_for('fees') }}"
+            class="stat-card-link"
+        >
+            View Fees →
+        </a>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-card-label">
+            Today's Attendance
+        </div>
+
+        <div class="stat-card-value">
+            {{ attendance_percentage }}%
+        </div>
+
+        <a
+            href="{{ url_for('attendance_report') }}"
+            class="stat-card-link"
+        >
+            View Report →
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- RECENT DATA -->
+
+<div class="dashboard-section">
+
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+                <h3>Recent Students</h3>
+
+                <p>
+                    Latest registered students
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('students') }}"
+                class="view-all"
+            >
+                View All
+            </a>
+
+        </div>
+
+
+        {% if recent_students %}
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Admission No.
+                            </th>
+
+                            <th>
+                                Student Name
+                            </th>
+
+                            <th>
+                                Mobile
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for student in recent_students %}
+
+                            <tr>
+
+                                <td>
+                                    {{ student.admission_no }}
+                                </td>
+
+                                <td>
+                                    {{ student.student_name }}
+                                </td>
+
+                                <td>
+                                    {{ student.mobile or '-' }}
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'student_details',
+                                            id=student.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        View
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                No students found.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+                <h3>Recent Fee Payments</h3>
+
+                <p>
+                    Latest fee transactions
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('fees') }}"
+                class="view-all"
+            >
+                View All
+            </a>
+
+        </div>
+
+
+        {% if recent_fees %}
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Receipt
+                            </th>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for fee in recent_fees %}
+
+                            <tr>
+
+                                <td>
+                                    {{ fee.receipt_no }}
+                                </td>
+
+                                <td>
+                                    {{ fee.student_name }}
+                                </td>
+
+                                <td>
+                                    ₹ {{ "%.2f"|format(fee.amount) }}
+                                </td>
+
+                                <td>
+                                    {{ fee.payment_date }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                No fee payments found.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Upcoming Exams
+            </h3>
+
+            <p>
+                Scheduled upcoming examinations
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('exams') }}"
+            class="view-all"
+        >
+            View All
+        </a>
+
+    </div>
+
+
+    {% if upcoming_exams %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Exam
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for exam in upcoming_exams %}
+
+                        <tr>
+
+                            <td>
+                                {{ exam.exam_name }}
+                            </td>
+
+                            <td>
+                                {{ exam.exam_date }}
+                            </td>
+
+                            <td>
+
+                                <span style="
+                                    display:inline-block;
+                                    padding:4px 9px;
+                                    border-radius:20px;
+                                    background:#dcfce7;
+                                    color:#166534;
+                                    font-size:11px;
+                                    font-weight:600;
+                                ">
+                                    {{ exam.status }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            No upcoming exams.
+        </div>
+
+    {% endif %}
+
+</div>
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Recent Results
+            </h3>
+
+            <p>
+                Latest examination results
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('results') }}"
+            class="view-all"
+        >
+            View All
+        </a>
+
+    </div>
+
+
+    {% if recent_results %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Exam
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Marks
+                        </th>
+
+                        <th>
+                            Grade
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for result in recent_results %}
+
+                        <tr>
+
+                            <td>
+                                {{ result.student_name }}
+                            </td>
+
+                            <td>
+                                {{ result.exam_name }}
+                            </td>
+
+                            <td>
+                                {{ result.subject }}
+                            </td>
+
+                            <td>
+                                {{ "%.2f"|format(result.marks) }}
+                                /
+                                {{ "%.2f"|format(result.max_marks) }}
+                            </td>
+
+                            <td>
+
+                                {% if result.grade %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#f3e8ff;
+                                        color:#7e22ce;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        {{ result.grade }}
+                                    </span>
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            No results found.
+        </div>
+
+    {% endif %}
+
+</div>
+
+</div>
+
+{% endblock %}

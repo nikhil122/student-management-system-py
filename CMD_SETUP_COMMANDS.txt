@@ -1,0 +1,299 @@
+STUDENT MANAGEMENT SYSTEM
+CMD SETUP & RUN COMMANDS
+========================
+
+This file contains the basic Windows CMD commands to set up and run
+the Student Management System step by step.
+
+Project Path
+------------
+C:\Student_Management_System
+
+
+STEP 1 - Open CMD
+-----------------
+Open Command Prompt.
+
+Then move to the project folder:
+
+    cd /d C:\Student_Management_System
+
+
+STEP 2 - Check Python
+---------------------
+Run:
+
+    python --version
+
+If `python` does not work, try:
+
+    py --version
+
+
+STEP 3 - Create Virtual Environment
+------------------------------------
+If the `venv` folder does not already exist:
+
+    python -m venv venv
+
+Or:
+
+    py -m venv venv
+
+
+STEP 4 - Activate Virtual Environment
+--------------------------------------
+Run:
+
+    venv\Scripts\activate
+
+After activation, CMD should show something similar to:
+
+    (venv) C:\Student_Management_System>
+
+
+STEP 5 - Upgrade pip
+--------------------
+Run:
+
+    python -m pip install --upgrade pip
+
+
+STEP 6 - Install Flask
+----------------------
+Run:
+
+    pip install flask
+
+
+STEP 7 - Install MySQL Connector
+---------------------------------
+Run:
+
+    pip install mysql-connector-python
+
+
+STEP 8 - Install Werkzeug
+-------------------------
+Run:
+
+    pip install werkzeug
+
+Note:
+Werkzeug is normally installed automatically with Flask, but this command
+can be used if required.
+
+
+STEP 9 - Install All Dependencies Together
+-------------------------------------------
+If a requirements.txt file exists in the project, use:
+
+    pip install -r requirements.txt
+
+This is preferred over installing packages one by one.
+
+
+STEP 10 - Check Installed Packages
+-----------------------------------
+Run:
+
+    pip list
+
+You should see Flask and mysql-connector-python.
+
+
+STEP 11 - Check Project Files
+-----------------------------
+Run:
+
+    dir
+
+Make sure important files/folders such as these exist:
+
+    app.py
+    templates
+    static
+    venv
+
+
+STEP 12 - Start MySQL
+---------------------
+Make sure MySQL is running.
+
+If using XAMPP:
+- Open XAMPP Control Panel.
+- Start MySQL.
+
+If MySQL is already running, no CMD command is required here.
+
+
+STEP 13 - Verify Database
+-------------------------
+The project database is:
+
+    student_management
+
+Make sure this database exists in MySQL and contains the required tables.
+
+
+STEP 14 - Run Flask Application
+-------------------------------
+With the virtual environment activated, run:
+
+    python app.py
+
+Or:
+
+    py app.py
+
+
+STEP 15 - Open Application
+--------------------------
+Open your browser and visit:
+
+    http://localhost:5000/
+
+
+If the application uses a different port, use the port shown in the CMD
+output.
+
+
+DAILY START COMMANDS
+--------------------
+After the project is already configured, normally you only need:
+
+    cd /d C:\Student_Management_System
+
+    venv\Scripts\activate
+
+    python app.py
+
+Then open:
+
+    http://localhost:5000/
+
+
+IF `python` COMMAND DOES NOT WORK
+---------------------------------
+Use:
+
+    py --version
+
+Then:
+
+    py -m venv venv
+
+    venv\Scripts\activate
+
+    py -m pip install --upgrade pip
+
+    py -m pip install flask mysql-connector-python werkzeug
+
+    py app.py
+
+
+IF VIRTUAL ENVIRONMENT IS NOT ACTIVATING
+----------------------------------------
+Try:
+
+    venv\Scripts\activate.bat
+
+If the venv folder does not exist, create it first:
+
+    python -m venv venv
+
+
+IF FLASK IS NOT FOUND
+---------------------
+Run:
+
+    python -m pip install flask
+
+Then:
+
+    python app.py
+
+
+IF MYSQL CONNECTOR ERROR OCCURS
+-------------------------------
+Run:
+
+    python -m pip install mysql-connector-python
+
+Then restart the application:
+
+    python app.py
+
+
+IF DEPENDENCIES ARE MISSING
+---------------------------
+If requirements.txt exists:
+
+    pip install -r requirements.txt
+
+Otherwise install the current basic dependencies:
+
+    pip install flask mysql-connector-python werkzeug
+
+
+STOP THE SERVER
+---------------
+In the CMD window where Flask is running, press:
+
+    CTRL + C
+
+
+RESTART THE SERVER
+------------------
+After making code changes:
+
+    CTRL + C
+
+Then:
+
+    python app.py
+
+
+DEACTIVATE VIRTUAL ENVIRONMENT
+------------------------------
+When finished working:
+
+    deactivate
+
+
+OPTIONAL - CREATE REQUIREMENTS.TXT
+-----------------------------------
+After all required packages are installed, generate:
+
+    pip freeze > requirements.txt
+
+Later, on another computer/server, install them with:
+
+    pip install -r requirements.txt
+
+
+IMPORTANT
+---------
+1. Always activate `venv` before running the project.
+2. Make sure MySQL is running.
+3. Make sure the `student_management` database exists.
+4. Do not store real passwords or secret credentials in public files.
+5. Do not upload the `venv` folder to GitHub.
+6. Do not upload database passwords to GitHub.
+7. If the project has a `.env` file, keep it private.
+
+
+QUICK COPY-PASTE START
+----------------------
+For a normal daily start:
+
+    cd /d C:\Student_Management_System
+    venv\Scripts\activate
+    python app.py
+
+Then open:
+
+    http://localhost:5000/
+
+
+END

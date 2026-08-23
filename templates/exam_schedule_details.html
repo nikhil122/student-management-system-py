@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}
+Exam Schedule Details - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Exam Schedule Details
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Exam Schedule Details</h2>
+
+        <p>
+            View complete examination schedule information.
+        </p>
+    </div>
+
+    <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+    ">
+
+        <a
+            href="{{ url_for('exam_schedule') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Schedule
+        </a>
+
+        <a
+            href="{{ url_for(
+                'edit_exam_schedule',
+                id=schedule.id
+            ) }}"
+            class="btn btn-primary"
+        >
+            Edit Schedule
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SCHEDULE SUMMARY
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div style="
+        padding:25px;
+        display:flex;
+        align-items:center;
+        gap:20px;
+        flex-wrap:wrap;
+    ">
+
+        <div style="
+            width:80px;
+            height:80px;
+            border-radius:14px;
+            background:#f3e8ff;
+            color:#9333ea;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:34px;
+        ">
+            📅
+        </div>
+
+
+        <div>
+
+            <h2 style="
+                margin-bottom:7px;
+                font-size:24px;
+            ">
+                {{ schedule.subject_name }}
+            </h2>
+
+            <p style="
+                color:#6b7280;
+                margin-bottom:5px;
+            ">
+                Exam:
+                <strong>
+                    {{ schedule.exam_name }}
+                </strong>
+            </p>
+
+            <p style="
+                color:#6b7280;
+            ">
+                Date:
+                <strong>
+                    {{ schedule.exam_date }}
+                </strong>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SCHEDULE INFORMATION
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Schedule Information
+            </h3>
+
+            <p>
+                Complete examination schedule details.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div class="schedule-details-grid">
+
+            <div>
+
+                <span class="detail-label">
+                    Exam
+                </span>
+
+                <strong>
+                    {{ schedule.exam_name }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    Subject
+                </span>
+
+                <strong>
+                    {{ schedule.subject_name }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    Exam Date
+                </span>
+
+                <strong>
+                    {{ schedule.exam_date }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    Start Time
+                </span>
+
+                <strong>
+                    {{ schedule.start_time }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    End Time
+                </span>
+
+                <strong>
+                    {{ schedule.end_time }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    Room No.
+                </span>
+
+                <strong>
+                    {{ schedule.room_no or '-' }}
+                </strong>
+
+            </div>
+
+
+            <div style="
+                grid-column:1 / -1;
+            ">
+
+                <span class="detail-label">
+                    Description
+                </span>
+
+                <strong>
+                    {{ schedule.description or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SYSTEM INFORMATION
+========================= -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                System Information
+            </h3>
+
+            <p>
+                Schedule record information.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div class="schedule-details-grid">
+
+            <div>
+
+                <span class="detail-label">
+                    Schedule ID
+                </span>
+
+                <strong>
+                    #{{ schedule.id }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    Exam ID
+                </span>
+
+                <strong>
+                    #{{ schedule.exam_id }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span class="detail-label">
+                    Created At
+                </span>
+
+                <strong>
+                    {{ schedule.created_at or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.schedule-details-grid {
+    display:grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap:20px;
+}
+
+.schedule-details-grid > div {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.detail-label {
+    font-size:12px;
+    color:#6b7280;
+}
+
+
+@media (max-width:650px) {
+
+    .schedule-details-grid {
+        grid-template-columns:1fr;
+    }
+
+    .schedule-details-grid > div[style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

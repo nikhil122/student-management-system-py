@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Attendance - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Edit Attendance
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Edit Attendance</h2>
+
+        <p>
+            Update attendance record.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('attendance') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Attendance
+        </a>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for(
+        'edit_attendance',
+        id=attendance.id
+    ) }}"
+>
+
+
+    <!-- =========================
+         STUDENT INFORMATION
+    ========================== -->
+
+    <div
+        class="section-card"
+        style="margin-bottom:20px;"
+    >
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Student Information
+                </h3>
+
+                <p>
+                    Attendance belongs to this student.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div
+                class="attendance-student-grid"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap:20px;
+                "
+            >
+
+                <div>
+
+                    <div class="stat-card-label">
+                        Admission Number
+                    </div>
+
+                    <strong>
+                        {{ attendance.admission_no }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <div class="stat-card-label">
+                        Student Name
+                    </div>
+
+                    <strong>
+                        {{ attendance.student_name }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ATTENDANCE INFORMATION
+    ========================== -->
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Attendance Information
+                </h3>
+
+                <p>
+                    Update date, status and remarks.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div
+                class="attendance-form-grid"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap:20px;
+                "
+            >
+
+                <!-- Date -->
+
+                <div class="form-group">
+
+                    <label>
+                        Attendance Date
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="attendance_date"
+                        class="form-control"
+                        value="{{ attendance.attendance_date }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-control"
+                        required
+                    >
+
+                        <option
+                            value="Present"
+                            {% if attendance.status == 'Present' %}
+                                selected
+                            {% endif %}
+                        >
+                            Present
+                        </option>
+
+                        <option
+                            value="Absent"
+                            {% if attendance.status == 'Absent' %}
+                                selected
+                            {% endif %}
+                        >
+                            Absent
+                        </option>
+
+                        <option
+                            value="Leave"
+                            {% if attendance.status == 'Leave' %}
+                                selected
+                            {% endif %}
+                        >
+                            Leave
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Remarks -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Remarks
+                    </label>
+
+                    <textarea
+                        name="remarks"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Optional remarks"
+                    >{{ attendance.remarks or '' }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ACTIONS
+    ========================== -->
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for('attendance') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Update Attendance
+        </button>
+
+    </div>
+
+</form>
+
+
+<style>
+
+@media (max-width:650px) {
+
+    .attendance-student-grid,
+    .attendance-form-grid {
+        grid-template-columns:1fr !important;
+    }
+
+    .attendance-form-grid [style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

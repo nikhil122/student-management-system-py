@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Exam Schedule - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Edit Exam Schedule
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Edit Exam Schedule</h2>
+
+        <p>
+            Update subject-wise examination schedule.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('exam_schedule') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Schedule
+        </a>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('edit_exam_schedule', id=schedule.id) }}"
+>
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Schedule Information
+                </h3>
+
+                <p>
+                    Update examination schedule details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div class="schedule-form-grid">
+
+                <!-- Exam -->
+
+                <div class="form-group">
+
+                    <label>
+                        Exam
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <select
+                        name="exam_id"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Exam
+                        </option>
+
+                        {% for exam in exams %}
+
+                            <option
+                                value="{{ exam.id }}"
+                                {% if schedule.exam_id == exam.id %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ exam.exam_name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- Subject -->
+
+                <div class="form-group">
+
+                    <label>
+                        Subject
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="subject_name"
+                        class="form-control"
+                        value="{{ schedule.subject_name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Exam Date -->
+
+                <div class="form-group">
+
+                    <label>
+                        Exam Date
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="exam_date"
+                        class="form-control"
+                        value="{{ schedule.exam_date }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Start Time -->
+
+                <div class="form-group">
+
+                    <label>
+                        Start Time
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="time"
+                        name="start_time"
+                        class="form-control"
+                        value="{{ schedule.start_time }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- End Time -->
+
+                <div class="form-group">
+
+                    <label>
+                        End Time
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="time"
+                        name="end_time"
+                        class="form-control"
+                        value="{{ schedule.end_time }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Room -->
+
+                <div class="form-group">
+
+                    <label>
+                        Room No.
+                    </label>
+
+                    <input
+                        type="text"
+                        name="room_no"
+                        class="form-control"
+                        value="{{ schedule.room_no or '' }}"
+                    >
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="4"
+                    >{{ schedule.description or '' }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for('exam_schedule') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Update Schedule
+        </button>
+
+    </div>
+
+</form>
+
+
+<style>
+
+.schedule-form-grid {
+    display:grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap:20px;
+}
+
+@media (max-width:650px) {
+
+    .schedule-form-grid {
+        grid-template-columns:1fr;
+    }
+
+    .schedule-form-grid [style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

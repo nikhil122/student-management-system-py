@@ -1,0 +1,192 @@
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-brand">
+
+        <div class="brand-icon">
+            SMS
+        </div>
+
+        <div class="brand-text">
+            <strong>Student</strong>
+            <span>Management System</span>
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <div class="nav-section">
+            MAIN
+        </div>
+
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+        >
+
+            <span class="nav-icon">⌂</span>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <div class="nav-section">
+            MANAGEMENT
+        </div>
+
+
+        <a
+            href="{{ url_for('students') }}"
+            class="nav-link {% if request.endpoint in ['students', 'add_student', 'student_details', 'edit_student'] %}active{% endif %}"
+        >
+
+            <span class="nav-icon">👨‍🎓</span>
+
+            <span>
+                Students
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('teachers') }}"
+            class="nav-link {% if request.endpoint in ['teachers', 'add_teacher', 'teacher_details', 'edit_teacher'] %}active{% endif %}"
+        >
+
+            <span class="nav-icon">👨‍🏫</span>
+
+            <span>
+                Teachers
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('courses') }}"
+            class="nav-link {% if request.endpoint in ['courses', 'add_course', 'course_details', 'edit_course'] %}active{% endif %}"
+        >
+
+            <span class="nav-icon">📚</span>
+
+            <span>
+                Courses
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('attendance') }}"
+            class="nav-link {% if request.endpoint in ['attendance', 'mark_attendance', 'attendance_report', 'student_attendance'] %}active{% endif %}"
+        >
+
+            <span class="nav-icon">✓</span>
+
+            <span>
+                Attendance
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('fees') }}"
+            class="nav-link {% if request.endpoint in ['fees', 'add_fee', 'fee_details', 'fee_receipt'] %}active{% endif %}"
+        >
+
+            <span class="nav-icon">₹</span>
+
+            <span>
+                Fees
+            </span>
+
+        </a>
+
+
+       <div class="nav-section">
+    ACADEMIC
+</div>
+
+
+<a
+    href="{{ url_for('exams') }}"
+    class="nav-link {% if request.endpoint in ['exams', 'add_exam', 'exam_details', 'edit_exam'] %}active{% endif %}"
+>
+
+    <span class="nav-icon">📝</span>
+
+    <span>
+        Exams
+    </span>
+
+</a>
+
+
+<a
+    href="{{ url_for('exam_schedule') }}"
+    class="nav-link {% if request.endpoint in ['exam_schedule', 'add_exam_schedule', 'edit_exam_schedule', 'exam_schedule_details'] %}active{% endif %}"
+>
+
+    <span class="nav-icon">📅</span>
+
+    <span>
+        Exam Schedule
+    </span>
+
+</a>
+
+
+   <a
+    href="{{ url_for('results') }}"
+    class="nav-link {% if request.endpoint in ['results', 'add_result', 'result_details', 'edit_result'] %}active{% endif %}"
+>
+
+    <span class="nav-icon">🏆</span>
+
+    <span>
+        Results
+    </span>
+
+</a>
+
+
+        <div class="nav-section">
+            ACCOUNT
+        </div>
+
+
+       <a
+    href="{{ url_for('profile') }}"
+    class="nav-link {% if request.endpoint == 'profile' %}active{% endif %}"
+>
+    <span class="nav-icon">👤</span>
+
+    <span>
+        Profile
+    </span>
+</a>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="nav-link logout-link"
+        >
+
+            <span class="nav-icon">↪</span>
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
+    </nav>
+
+</aside>

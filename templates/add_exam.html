@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Exam - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Add Exam
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Add Exam</h2>
+
+        <p>
+            Create a new examination record.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('exams') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Back to Exams
+        </a>
+
+    </div>
+
+</div>
+
+
+<form
+    method="POST"
+    action="{{ url_for('add_exam') }}"
+>
+
+    <div class="section-card">
+
+        <div class="section-card-header">
+
+            <div>
+
+                <h3>
+                    Exam Information
+                </h3>
+
+                <p>
+                    Enter examination details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div style="padding:22px;">
+
+            <div
+                class="exam-form-grid"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                        repeat(2, minmax(0, 1fr));
+                    gap:20px;
+                "
+            >
+
+                <!-- Exam Name -->
+
+                <div class="form-group">
+
+                    <label>
+                        Exam Name
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="exam_name"
+                        class="form-control"
+                        placeholder="Enter exam name"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Exam Date -->
+
+                <div class="form-group">
+
+                    <label>
+                        Exam Date
+                        <span style="color:#dc2626;">*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        name="exam_date"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-control"
+                    >
+
+                       <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div
+                    class="form-group"
+                    style="grid-column:1 / -1;"
+                >
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Optional exam description"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-top:20px;
+    ">
+
+        <a
+            href="{{ url_for('exams') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Save Exam
+        </button>
+
+    </div>
+
+</form>
+
+
+<style>
+
+@media (max-width:650px) {
+
+    .exam-form-grid {
+        grid-template-columns:1fr !important;
+    }
+
+    .exam-form-grid [style*="grid-column"] {
+        grid-column:auto !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}

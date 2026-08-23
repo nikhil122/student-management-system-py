@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}
+Teachers - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Teachers
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Teachers</h2>
+
+        <p>
+            Manage all registered teachers.
+        </p>
+    </div>
+<br/>
+    <div>
+
+        <a
+            href="{{ url_for('add_teacher') }}"
+            class="btn btn-primary"
+        >
+            + Add Teacher
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- SEARCH -->
+
+<div
+    class="card"
+    style="margin-bottom:20px;"
+>
+
+    <form
+        method="GET"
+        action="{{ url_for('teachers') }}"
+        style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        "
+    >
+
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search teacher, code, subject, mobile..."
+            value="{{ search or '' }}"
+            style="max-width:420px;"
+        >
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Search
+        </button>
+
+        <a
+            href="{{ url_for('teachers') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            Clear
+        </a>
+
+    </form>
+
+</div>
+
+
+<!-- TEACHER TABLE -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Teacher List
+            </h3>
+
+            <p>
+                All registered teachers
+            </p>
+
+        </div>
+
+        <div>
+
+            <span style="
+                color:#6b7280;
+                font-size:12px;
+            ">
+                Total:
+                <strong>
+                    {{ teachers|length }}
+                </strong>
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if teachers %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Code
+                        </th>
+
+                        <th>
+                            Teacher Name
+                        </th>
+
+                        <th>
+                            Qualification
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Mobile
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for teacher in teachers %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    {{ teacher.teacher_code }}
+                                </strong>
+
+                            </td>
+
+                            <td>
+                                {{ teacher.teacher_name }}
+                            </td>
+
+                            <td>
+                                {{ teacher.qualification or '-' }}
+                            </td>
+
+                            <td>
+                                {{ teacher.subject or '-' }}
+                            </td>
+
+                            <td>
+                                {{ teacher.mobile or '-' }}
+                            </td>
+
+                            <td>
+                                {{ teacher.email or '-' }}
+                            </td>
+
+                            <td>
+
+                                {% if teacher.status == 'Active' %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#dcfce7;
+                                        color:#166534;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        padding:4px 9px;
+                                        border-radius:20px;
+                                        background:#fee2e2;
+                                        color:#991b1b;
+                                        font-size:11px;
+                                        font-weight:600;
+                                    ">
+                                        {{ teacher.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <div style="
+                                    display:flex;
+                                    gap:6px;
+                                    flex-wrap:wrap;
+                                ">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'teacher_details',
+                                            id=teacher.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        View
+                                    </a>
+
+                                    <a
+                                        href="{{ url_for(
+                                            'edit_teacher',
+                                            id=teacher.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        Edit
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div style="
+                font-size:35px;
+                margin-bottom:10px;
+            ">
+                👨‍🏫
+            </div>
+
+            <strong>
+                No teachers found
+            </strong>
+
+            <p style="
+                margin-top:6px;
+            ">
+                Start by adding a new teacher.
+            </p>
+
+            <br>
+
+            <a
+                href="{{ url_for('add_teacher') }}"
+                class="btn btn-primary"
+            >
+                + Add Teacher
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

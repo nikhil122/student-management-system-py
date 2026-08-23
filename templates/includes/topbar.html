@@ -1,0 +1,62 @@
+<header class="topbar">
+
+    <div class="topbar-left">
+
+        <button
+            type="button"
+            class="menu-toggle"
+            id="menuToggle"
+        >
+            ☰
+        </button>
+
+        <div>
+
+            <h1 class="page-title">
+
+                {% block page_title %}
+                Dashboard
+                {% endblock %}
+
+            </h1>
+
+        </div>
+
+    </div>
+
+
+    <div class="topbar-right">
+
+        <div class="user-info">
+
+            <div class="user-avatar">
+
+                {{ session.name[0]|upper }}
+
+            </div>
+
+            <div class="user-details">
+
+                <strong>
+                    {{ session.name }}
+                </strong>
+
+                <span>
+                    {{ session.role|capitalize }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="logout-btn"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</header>

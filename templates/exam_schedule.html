@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+
+{% block title %}
+Exam Schedule - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Exam Schedule
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Exam Schedule</h2>
+
+        <p>
+            Manage subject-wise examination schedules.
+        </p>
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('add_exam_schedule') }}"
+            class="btn btn-primary"
+        >
+            + Add Schedule
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- FILTER -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Filter Schedule
+            </h3>
+
+            <p>
+                Search and filter examination schedules.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:20px;">
+
+        <form
+            method="GET"
+            action="{{ url_for('exam_schedule') }}"
+            class="schedule-filter-form"
+        >
+
+            <div class="filter-field">
+
+                <label>
+                    Exam
+                </label>
+
+                <select
+                    name="exam_id"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        All Exams
+                    </option>
+
+                    {% for exam in exams %}
+
+                        <option
+                            value="{{ exam.id }}"
+                            {% if exam_id|string == exam.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ exam.exam_name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label>
+                    Subject
+                </label>
+
+                <input
+                    type="text"
+                    name="subject"
+                    class="form-control"
+                    placeholder="Search subject..."
+                    value="{{ subject or '' }}"
+                >
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Filter
+                </button>
+
+                <a
+                    href="{{ url_for('exam_schedule') }}"
+                    class="btn"
+                    style="
+                        background:#f3f4f6;
+                        color:#374151;
+                    "
+                >
+                    Clear
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- SCHEDULE TABLE -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Schedule List
+            </h3>
+
+            <p>
+                Subject-wise exam schedule.
+            </p>
+
+        </div>
+
+        <div>
+
+            <span style="
+                color:#6b7280;
+                font-size:12px;
+            ">
+
+                Total:
+
+                <strong>
+                    {{ schedules|length }}
+                </strong>
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if schedules %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Exam</th>
+
+                        <th>Subject</th>
+
+                        <th>Date</th>
+
+                        <th>Time</th>
+
+                        <th>Room</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for schedule in schedules %}
+
+                        <tr>
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ schedule.exam_name }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ schedule.subject_name }}
+                            </td>
+
+
+                            <td>
+                                {{ schedule.exam_date }}
+                            </td>
+
+
+                            <td>
+
+                                {{ schedule.start_time }}
+                                -
+                                {{ schedule.end_time }}
+
+                            </td>
+
+
+                            <td>
+                                {{ schedule.room_no or '-' }}
+                            </td>
+
+
+                            <td>
+
+                                <div style="
+                                    display:flex;
+                                    gap:6px;
+                                    flex-wrap:wrap;
+                                ">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'edit_exam_schedule',
+                                            id=schedule.id
+                                        ) }}"
+                                        class="table-action"
+                                    >
+                                        Edit
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div style="
+                font-size:35px;
+                margin-bottom:10px;
+            ">
+                📅
+            </div>
+
+            <strong>
+                No exam schedule found
+            </strong>
+
+            <p style="margin-top:6px;">
+                Add a schedule to get started.
+            </p>
+
+            <br>
+
+            <a
+                href="{{ url_for('add_exam_schedule') }}"
+                class="btn btn-primary"
+            >
+                + Add Schedule
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+.schedule-filter-form {
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+.schedule-filter-form .filter-field {
+    width:230px;
+}
+
+.schedule-filter-form .filter-field label {
+    display:block;
+    margin-bottom:7px;
+    font-size:13px;
+    font-weight:600;
+    color:#374151;
+}
+
+.schedule-filter-form .filter-actions {
+    display:flex;
+    gap:8px;
+}
+
+
+@media (max-width:650px) {
+
+    .schedule-filter-form {
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .schedule-filter-form .filter-field {
+        width:100%;
+    }
+
+    .schedule-filter-form .filter-actions {
+        width:100%;
+    }
+
+    .schedule-filter-form .filter-actions .btn {
+        flex:1;
+        text-align:center;
+    }
+
+}
+
+</style>
+
+{% endblock %}

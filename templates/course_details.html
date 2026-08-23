@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}
+Course Details - Student Management System
+{% endblock %}
+
+{% block page_title %}
+Course Details
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h2>Course Details</h2>
+
+        <p>
+            View complete course information.
+        </p>
+    </div>
+
+    <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+    ">
+
+        <a
+            href="{{ url_for('courses') }}"
+            class="btn"
+            style="
+                background:#f3f4f6;
+                color:#374151;
+            "
+        >
+            ← Courses
+        </a>
+
+        <a
+            href="{{ url_for(
+                'edit_course',
+                id=course.id
+            ) }}"
+            class="btn btn-primary"
+        >
+            Edit Course
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     COURSE SUMMARY
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div style="
+        padding:25px;
+        display:flex;
+        align-items:center;
+        gap:20px;
+        flex-wrap:wrap;
+    ">
+
+        <!-- COURSE ICON -->
+
+        <div style="
+            width:90px;
+            height:90px;
+            border-radius:14px;
+            background:#f3e8ff;
+            color:#9333ea;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:40px;
+            border:1px solid #e9d5ff;
+        ">
+            📚
+        </div>
+
+
+        <!-- BASIC INFO -->
+
+        <div>
+
+            <h2 style="
+                margin-bottom:8px;
+                font-size:24px;
+            ">
+                {{ course.course_name }}
+            </h2>
+
+            <p style="
+                color:#6b7280;
+                margin-bottom:7px;
+            ">
+
+                Course Code:
+
+                <strong>
+                    {{ course.course_code }}
+                </strong>
+
+            </p>
+
+
+            <p style="
+                color:#6b7280;
+            ">
+
+                Status:
+
+                {% if course.status == 'Active' %}
+
+                    <span style="
+                        display:inline-block;
+                        padding:4px 10px;
+                        border-radius:20px;
+                        background:#dcfce7;
+                        color:#166534;
+                        font-size:11px;
+                        font-weight:600;
+                    ">
+                        Active
+                    </span>
+
+                {% else %}
+
+                    <span style="
+                        display:inline-block;
+                        padding:4px 10px;
+                        border-radius:20px;
+                        background:#fee2e2;
+                        color:#991b1b;
+                        font-size:11px;
+                        font-weight:600;
+                    ">
+                        {{ course.status }}
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     COURSE INFORMATION
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Course Information
+            </h3>
+
+            <p>
+                Basic course details
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div
+            class="details-grid"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+                gap:20px;
+            "
+        >
+
+            <div>
+
+                <div class="stat-card-label">
+                    Course Name
+                </div>
+
+                <strong>
+                    {{ course.course_name }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Course Code
+                </div>
+
+                <strong>
+                    {{ course.course_code }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Duration
+                </div>
+
+                <strong>
+                    {{ course.duration or '-' }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Total Fees
+                </div>
+
+                <strong>
+                    ₹ {{ "%.2f"|format(
+                        course.total_fees or 0
+                    ) }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Status
+                </div>
+
+                <strong>
+                    {{ course.status }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     DESCRIPTION
+========================= -->
+
+<div
+    class="section-card"
+    style="margin-bottom:20px;"
+>
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                Description
+            </h3>
+
+            <p>
+                Course overview
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div style="
+            color:#4b5563;
+            line-height:1.7;
+            white-space:pre-line;
+        ">
+
+            {{ course.description or 'No description available.' }}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SYSTEM INFORMATION
+========================= -->
+
+<div class="section-card">
+
+    <div class="section-card-header">
+
+        <div>
+
+            <h3>
+                System Information
+            </h3>
+
+            <p>
+                Record information
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="padding:22px;">
+
+        <div
+            class="details-grid"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+                gap:20px;
+            "
+        >
+
+            <div>
+
+                <div class="stat-card-label">
+                    Created At
+                </div>
+
+                <strong>
+                    {{ course.created_at or '-' }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <div class="stat-card-label">
+                    Last Updated
+                </div>
+
+                <strong>
+                    {{ course.updated_at or '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+@media (max-width: 650px) {
+
+    .details-grid {
+        grid-template-columns:1fr !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}
